@@ -193,18 +193,25 @@ SoftwareLoop.UploaderPlusMixin = {
     //**************************************************************************
 
     onMetadataSubmit: function () {
+    	//reescribo el metodo de validacion para que muestre mensaje
+    	Alfresco.forms.Form.prototype.validate= function(notificationLevel){
+    		notificationLevel = notificationLevel || Alfresco.forms.Form.NOTIFICATION_LEVEL_FIELD;
+    		return this._runValidations({"type":"submit"}, false, notificationLevel);
+    	}
+    	
+    	
         Alfresco.logger.debug("onMetadataSubmit", arguments);
         this.formUi.formsRuntime._setAllFieldsAsVisited();
-        if (this.formUi.formsRuntime.validate()) {
+        if (this.formUi.formsRuntime.validate(Alfresco.forms.Form.NOTIFICATION_LEVEL_CONTAINER)) {
             Alfresco.logger.debug("Form validated");
             this.processMetadata();
             this.currentRecordIndex++;
             this.showMetadataDialog();
         } else {
             Alfresco.logger.debug("Form with errors");
-            Alfresco.util.PopupManager.displayMessage({
-                text: this.msg("validation.errors.correct.before.proceeding")
-            });
+            //Alfresco.util.PopupManager.displayMessage({
+            //    text: this.msg("validation.errors.correct.before.proceeding")
+            //});
         }
         Alfresco.logger.debug("END onMetadataSubmit");
     },
